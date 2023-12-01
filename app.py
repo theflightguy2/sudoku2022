@@ -173,32 +173,32 @@ def SolvePuzzle(PuzzleGrid, Puzzle, Answer):
         for item in PuzzleGrid[1:]:
             col.append(item[1:][int(CellInfo[1]) - 1])
 
-        # def threebythreemaker():
-        #     threebythree = []
-        #     threebythree.append(PuzzleGrid[int(CellInfo[0])][int(CellInfo[1]) - 1])
-        #     threebythree.append(PuzzleGrid[int(CellInfo[0])][int(CellInfo[1]) + 1])
-        #     try:
-        #         threebythree.append(PuzzleGrid[int(CellInfo[0]) - 1][int(CellInfo[1])])
-        #         threebythree.append(
-        #             PuzzleGrid[int(CellInfo[0]) - 1][int(CellInfo[1]) + 1]
-        #         )
-        #         threebythree.append(
-        #             PuzzleGrid[int(CellInfo[0]) - 1][int(CellInfo[1]) - 1]
-        #         )
-        #     except IndexError:
-        #         pass
+        def threemaker():
+            combos = [
+                [2, 2],
+                [5, 2],
+                [8, 2],
+                [2, 5],
+                [5, 5],
+                [8, 5],
+                [2, 8],
+                [5, 8],
+                [8, 8],
+            ]
+            threes = []
+            for combo in combos:
+                temp = []
+                temp.append(PuzzleGrid[combo[0]][combo[1] - 1])
+                temp.append(PuzzleGrid[combo[0]][combo[1] + 1])
+                temp.append(PuzzleGrid[combo[0] - 1][combo[1]])
+                temp.append(PuzzleGrid[combo[0] - 1][combo[1] + 1])
+                temp.append(PuzzleGrid[combo[0] - 1][combo[1] - 1])
+                temp.append(PuzzleGrid[combo[0] + 1][combo[1]])
+                temp.append(PuzzleGrid[combo[0] + 1][combo[1] + 1])
+                temp.append(PuzzleGrid[combo[0] + 1][combo[1] - 1])
+                threes.append(temp)
 
-        #     try:
-        #         threebythree.append(PuzzleGrid[int(CellInfo[0]) + 1][int(CellInfo[1])])
-        #         threebythree.append(
-        #             PuzzleGrid[int(CellInfo[0]) + 1][int(CellInfo[1]) + 1]
-        #         )
-        #         threebythree.append(
-        #             PuzzleGrid[int(CellInfo[0]) + 1][int(CellInfo[1]) - 1]
-        #         )
-        #     except IndexError:
-        #         pass
-        #     return threebythree
+            return threes
 
         while CellInfo != EMPTY_STRING:
             while "0" in CellInfo:
@@ -221,14 +221,72 @@ def SolvePuzzle(PuzzleGrid, Puzzle, Answer):
                 for item in PuzzleGrid[1:]:
                     col.append(item[1:][int(CellInfo[1]) - 1])
 
-            # threebythreelol = threebythreemaker()
+            def quadgen():
+                if int(CellInfo[0]) <= 3 and int(CellInfo[1]) <= 3:
+                    quad = 0
+                elif (
+                    int(CellInfo[0]) <= 6
+                    and int(CellInfo[0]) >= 4
+                    and int(CellInfo[1]) <= 3
+                ):
+                    quad = 1
+                elif (
+                    int(CellInfo[0]) <= 9
+                    and int(CellInfo[0]) >= 7
+                    and int(CellInfo[1]) <= 3
+                ):
+                    quad = 2
+                elif (
+                    int(CellInfo[0]) <= 3
+                    and int(CellInfo[1]) >= 4
+                    and int(CellInfo[1]) <= 6
+                ):
+                    quad = 3
+                elif (
+                    int(CellInfo[0]) <= 6
+                    and int(CellInfo[0]) >= 4
+                    and int(CellInfo[1]) <= 6
+                    and int(CellInfo[1]) >= 4
+                ):
+                    quad = 4
+                elif (
+                    int(CellInfo[0]) <= 9
+                    and int(CellInfo[0]) >= 7
+                    and int(CellInfo[1]) <= 6
+                    and int(CellInfo[1]) >= 4
+                ):
+                    quad = 5
+                elif (
+                    int(CellInfo[0]) <= 3
+                    and int(CellInfo[1]) >= 7
+                    and int(CellInfo[1]) <= 9
+                ):
+                    quad = 6
+                elif (
+                    int(CellInfo[0]) <= 6
+                    and int(CellInfo[0]) >= 4
+                    and int(CellInfo[1]) >= 7
+                    and int(CellInfo[1]) <= 9
+                ):
+                    quad = 7
+                elif (
+                    int(CellInfo[0]) <= 9
+                    and int(CellInfo[0]) >= 7
+                    and int(CellInfo[1]) >= 7
+                    and int(CellInfo[1]) <= 9
+                ):
+                    quad = 8
+                return quad
 
-            # while CellInfo[2] in threebythreelol:
-            #     print("Item already in 3x3 Grid")
-            #     print("Enter row column digit: ")
-            #     print("(Press Enter to stop)")
-            #     CellInfo = input()
-            #     threebythreelol = threebythreemaker()
+            quad = quadgen()
+
+            threes = threemaker()
+            while CellInfo[2] in threes[quad]:
+                print("Item already in 3x3")
+                print("Enter row column digit: ")
+                print("(Press Enter to stop)")
+                CellInfo = input()
+                quad = quadgen()
 
             InputError = False
             if len(CellInfo) != 3:

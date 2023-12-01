@@ -172,6 +172,34 @@ def SolvePuzzle(PuzzleGrid, Puzzle, Answer):
         col = []
         for item in PuzzleGrid[1:]:
             col.append(item[1:][int(CellInfo[1]) - 1])
+
+        # def threebythreemaker():
+        #     threebythree = []
+        #     threebythree.append(PuzzleGrid[int(CellInfo[0])][int(CellInfo[1]) - 1])
+        #     threebythree.append(PuzzleGrid[int(CellInfo[0])][int(CellInfo[1]) + 1])
+        #     try:
+        #         threebythree.append(PuzzleGrid[int(CellInfo[0]) - 1][int(CellInfo[1])])
+        #         threebythree.append(
+        #             PuzzleGrid[int(CellInfo[0]) - 1][int(CellInfo[1]) + 1]
+        #         )
+        #         threebythree.append(
+        #             PuzzleGrid[int(CellInfo[0]) - 1][int(CellInfo[1]) - 1]
+        #         )
+        #     except IndexError:
+        #         pass
+
+        #     try:
+        #         threebythree.append(PuzzleGrid[int(CellInfo[0]) + 1][int(CellInfo[1])])
+        #         threebythree.append(
+        #             PuzzleGrid[int(CellInfo[0]) + 1][int(CellInfo[1]) + 1]
+        #         )
+        #         threebythree.append(
+        #             PuzzleGrid[int(CellInfo[0]) + 1][int(CellInfo[1]) - 1]
+        #         )
+        #     except IndexError:
+        #         pass
+        #     return threebythree
+
         while CellInfo != EMPTY_STRING:
             while "0" in CellInfo:
                 print("Cannot use 00")
@@ -192,6 +220,15 @@ def SolvePuzzle(PuzzleGrid, Puzzle, Answer):
                 col = []
                 for item in PuzzleGrid[1:]:
                     col.append(item[1:][int(CellInfo[1]) - 1])
+
+            # threebythreelol = threebythreemaker()
+
+            # while CellInfo[2] in threebythreelol:
+            #     print("Item already in 3x3 Grid")
+            #     print("Enter row column digit: ")
+            #     print("(Press Enter to stop)")
+            #     CellInfo = input()
+            #     threebythreelol = threebythreemaker()
 
             InputError = False
             if len(CellInfo) != 3:

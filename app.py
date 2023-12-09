@@ -10,6 +10,8 @@ import random
 EMPTY_STRING = ""
 SPACE = " "
 GRID_SIZE = 9
+global flagP
+flagP = False
 
 
 def ResetDataStructures():
@@ -117,6 +119,8 @@ def TransferAnswerIntoGrid(PuzzleGrid, Answer):
 
 
 def LoadPartSolvedPuzzle(PuzzleGrid, Puzzle, Answer, Solution):
+    global flagP
+    flagP = True
     PuzzleGrid, Puzzle, Answer, Solution = LoadPuzzle(
         PuzzleGrid, Puzzle, Answer, Solution
     )
@@ -162,44 +166,21 @@ def DisplayGrid(PuzzleGrid):
 
 def SolvePuzzle(PuzzleGrid, Puzzle, Answer):
     DisplayGrid(PuzzleGrid)
+
+    if flagP == True:
+        unchangables = []
+        for x in range(0, 10):
+            for y in range(0, 10):
+                if PuzzleGrid[x][y] != " ":
+                    unchangables.append((x, y))
+
+    print(unchangables)
     if PuzzleGrid[0][0] != "X":
         print("No puzzle loaded")
     else:
         print("Enter row column digit: ")
         print("(Press Enter to stop)")
         CellInfo = input()
-        row = PuzzleGrid[1:][int(CellInfo[0]) - 1]
-        col = []
-        for item in PuzzleGrid[1:]:
-            col.append(item[1:][int(CellInfo[1]) - 1])
-
-        def threemaker():
-            combos = [
-                [2, 2],
-                [5, 2],
-                [8, 2],
-                [2, 5],
-                [5, 5],
-                [8, 5],
-                [2, 8],
-                [5, 8],
-                [8, 8],
-            ]
-            threes = []
-            for combo in combos:
-                temp = []
-                temp.append(PuzzleGrid[combo[0]][combo[1] - 1])
-                temp.append(PuzzleGrid[combo[0]][combo[1] + 1])
-                temp.append(PuzzleGrid[combo[0] - 1][combo[1]])
-                temp.append(PuzzleGrid[combo[0] - 1][combo[1] + 1])
-                temp.append(PuzzleGrid[combo[0] - 1][combo[1] - 1])
-                temp.append(PuzzleGrid[combo[0] + 1][combo[1]])
-                temp.append(PuzzleGrid[combo[0] + 1][combo[1] + 1])
-                temp.append(PuzzleGrid[combo[0] + 1][combo[1] - 1])
-                threes.append(temp)
-
-            return threes
-
         while CellInfo != EMPTY_STRING:
             while "0" in CellInfo:
                 print("Cannot use 00")
@@ -207,88 +188,8 @@ def SolvePuzzle(PuzzleGrid, Puzzle, Answer):
                 print("(Press Enter to stop)")
                 CellInfo = input()
 
-            while CellInfo[2] in row or CellInfo[2] in col:
-                row = PuzzleGrid[1:][int(CellInfo[0]) - 1]
-                col = []
-                for item in PuzzleGrid[1:]:
-                    col.append(item[1:][int(CellInfo[1]) - 1])
-                print("Item already in row or column")
-                print("Enter row column digit: ")
-                print("(Press Enter to stop)")
-                CellInfo = input()
-                row = PuzzleGrid[1:][int(CellInfo[0]) - 1]
-                col = []
-                for item in PuzzleGrid[1:]:
-                    col.append(item[1:][int(CellInfo[1]) - 1])
-
-            def quadgen():
-                if int(CellInfo[0]) <= 3 and int(CellInfo[1]) <= 3:
-                    quad = 0
-                elif (
-                    int(CellInfo[0]) <= 6
-                    and int(CellInfo[0]) >= 4
-                    and int(CellInfo[1]) <= 3
-                ):
-                    quad = 1
-                elif (
-                    int(CellInfo[0]) <= 9
-                    and int(CellInfo[0]) >= 7
-                    and int(CellInfo[1]) <= 3
-                ):
-                    quad = 2
-                elif (
-                    int(CellInfo[0]) <= 3
-                    and int(CellInfo[1]) >= 4
-                    and int(CellInfo[1]) <= 6
-                ):
-                    quad = 3
-                elif (
-                    int(CellInfo[0]) <= 6
-                    and int(CellInfo[0]) >= 4
-                    and int(CellInfo[1]) <= 6
-                    and int(CellInfo[1]) >= 4
-                ):
-                    quad = 4
-                elif (
-                    int(CellInfo[0]) <= 9
-                    and int(CellInfo[0]) >= 7
-                    and int(CellInfo[1]) <= 6
-                    and int(CellInfo[1]) >= 4
-                ):
-                    quad = 5
-                elif (
-                    int(CellInfo[0]) <= 3
-                    and int(CellInfo[1]) >= 7
-                    and int(CellInfo[1]) <= 9
-                ):
-                    quad = 6
-                elif (
-                    int(CellInfo[0]) <= 6
-                    and int(CellInfo[0]) >= 4
-                    and int(CellInfo[1]) >= 7
-                    and int(CellInfo[1]) <= 9
-                ):
-                    quad = 7
-                elif (
-                    int(CellInfo[0]) <= 9
-                    and int(CellInfo[0]) >= 7
-                    and int(CellInfo[1]) >= 7
-                    and int(CellInfo[1]) <= 9
-                ):
-                    quad = 8
-                return quad
-
-            quad = quadgen()
-
-            threes = threemaker()
-            while CellInfo[2] in threes[quad]:
-                print("Item already in 3x3")
-                print("Enter row column digit: ")
-                print("(Press Enter to stop)")
-                CellInfo = input()
-                quad = quadgen()
-
             InputError = False
+
             if len(CellInfo) != 3:
                 InputError = True
             else:
@@ -303,6 +204,39 @@ def SolvePuzzle(PuzzleGrid, Puzzle, Answer):
                     InputError = True
                 if Digit < "1" or Digit > "9":
                     InputError = True
+
+                for row in PuzzleGrid:
+                    if Digit == row[Column]:
+                        InputError = True
+                for item in PuzzleGrid[Row]:
+                    if item == Digit:
+                        InputError = True
+                print(PuzzleGrid)
+
+                topleft_x = (Row + 2) // 3
+                topleft_y = (Column + 2) // 3
+
+                if topleft_x == 2:
+                    topleft_x += 2
+                elif topleft_x == 3:
+                    topleft_x += 4
+
+                if topleft_y == 2:
+                    topleft_y += 2
+                elif topleft_y == 3:
+                    topleft_y += 4
+                threes = []
+                for x in range(topleft_x, topleft_x + 3):
+                    for y in range(topleft_y, topleft_y + 3):
+                        threes.append(PuzzleGrid[x][y])
+                if CellInfo[2] in threes:
+                    InputError = True
+
+                if flagP == True:
+                    if (Row, Column) in unchangables:
+                        print("existingerror")
+                        InputError = True
+
             if InputError:
                 print("Invalid input")
             else:
@@ -310,6 +244,10 @@ def SolvePuzzle(PuzzleGrid, Puzzle, Answer):
                 Answer[2] = str(int(Answer[2]) + 1)
                 Answer[int(Answer[2]) + 2] = CellInfo
                 DisplayGrid(PuzzleGrid)
+                counter = 0
+                for item in PuzzleGrid[1:]:
+                    counter += item[1:].count(" ")
+                print(f"There are {counter} spaces left to fill")
 
             print("Enter row column digit: ")
             print("(Press Enter to stop)")
@@ -391,8 +329,20 @@ def DisplayResults(Answer):
         print("You didn't make a start")
 
 
+global hint_counter
+hint_counter = 0
+
+
+def givehint():
+    # to be done
+    pass
+
+
 def NumberPuzzle():
+    flagP = False
     Finished = False
+    global hint_counter
+    hint_count = 0
     PuzzleGrid, Puzzle, Answer, Solution = ResetDataStructures()
     while not Finished:
         DisplayMenu()
@@ -401,10 +351,17 @@ def NumberPuzzle():
             PuzzleGrid, Puzzle, Answer, Solution = LoadPuzzle(
                 PuzzleGrid, Puzzle, Answer, Solution
             )
+        elif MenuOption == "H":
+            if hint_count <= 3:
+                givehint()
+            else:
+                print("Reached maximum hints")
+
         elif MenuOption == "P":
             PuzzleGrid, Puzzle, Answer, Solution = LoadPartSolvedPuzzle(
                 PuzzleGrid, Puzzle, Answer, Solution
             )
+
         elif MenuOption == "K":
             KeepPuzzle(PuzzleGrid, Answer)
         elif MenuOption == "C":

@@ -12,6 +12,7 @@ SPACE = " "
 GRID_SIZE = 9
 global flagP
 flagP = False
+changes = []
 
 
 def ResetDataStructures():
@@ -166,15 +167,14 @@ def DisplayGrid(PuzzleGrid):
 
 def SolvePuzzle(PuzzleGrid, Puzzle, Answer):
     DisplayGrid(PuzzleGrid)
+    unchangables = []
 
     if flagP == True:
-        unchangables = []
         for x in range(0, 10):
             for y in range(0, 10):
                 if PuzzleGrid[x][y] != " ":
                     unchangables.append((x, y))
 
-    print(unchangables)
     if PuzzleGrid[0][0] != "X":
         print("No puzzle loaded")
     else:
@@ -240,6 +240,7 @@ def SolvePuzzle(PuzzleGrid, Puzzle, Answer):
             if InputError:
                 print("Invalid input")
             else:
+                changes.append(f"{Row}{Column}{PuzzleGrid[Row][Column]}{Digit}")
                 PuzzleGrid[Row][Column] = Digit
                 Answer[2] = str(int(Answer[2]) + 1)
                 Answer[int(Answer[2]) + 2] = CellInfo
@@ -264,6 +265,8 @@ def DisplayMenu():
     print("P - Load partially solved puzzle")
     print("S - Solve puzzle")
     print("C - Check solution")
+    print("H - Get Hint")
+    print("U - Undo n moves")
     print("K - Keep partially solved puzzle")
     print("X - Exit")
     print()
@@ -333,16 +336,29 @@ global hint_counter
 hint_counter = 0
 
 
-def givehint():
-    # to be done
-    pass
+def givehint(Solution):
+    global hint_counter
+    if hint_counter < 3:
+        randx = random.randint(1, 9)
+        randy = random.randint(1, 9)
+        val = Solution[randx][randx]
+        print(f"HINT! At Square ({randx},{randy}), the value is {val}")
+        hint_counter += 1
+    else:
+        print("Max Hints reached!")
+
+
+def undo(PuzzleGrid, n):
+    for i in range(1, (n + 1)):
+        PuzzleGrid[int(changes[-i][0])][int(changes[-i][1])] = changes[-i][2]
+
+    return PuzzleGrid
 
 
 def NumberPuzzle():
     flagP = False
     Finished = False
-    global hint_counter
-    hint_count = 0
+
     PuzzleGrid, Puzzle, Answer, Solution = ResetDataStructures()
     while not Finished:
         DisplayMenu()
@@ -352,10 +368,7 @@ def NumberPuzzle():
                 PuzzleGrid, Puzzle, Answer, Solution
             )
         elif MenuOption == "H":
-            if hint_count <= 3:
-                givehint()
-            else:
-                print("Reached maximum hints")
+            givehint(Solution)
 
         elif MenuOption == "P":
             PuzzleGrid, Puzzle, Answer, Solution = LoadPartSolvedPuzzle(
@@ -380,8 +393,12 @@ def NumberPuzzle():
                     print("No answers to check")
         elif MenuOption == "S":
             PuzzleGrid, Answer = SolvePuzzle(PuzzleGrid, Puzzle, Answer)
+        elif MenuOption == "U":
+            n = input("Enter how many moves you want to undo: ")
+            PuzzleGrid = undo(PuzzleGrid, int(n))
         elif MenuOption == "X":
             Finished = True
+
         else:
             ResponseNumber = random.randint(1, 5)
             if ResponseNumber == 1:
